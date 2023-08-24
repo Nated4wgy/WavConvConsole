@@ -1,4 +1,4 @@
-// WavConvConsole.cpp : This file contains the 'main' function. Program execution begins and ends there.
+﻿// WavConvConsole.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //Program to convolude audio files. Starting as a console app. 
 
 //TO DO LIST
@@ -12,21 +12,22 @@
 
 #include <iostream>
 #include <audiofile.h>
-#include <cstdlib>
+#include <random>
 using namespace std;
 
 
 //Okay dude lets get set up.
-AudioFile<double> audioFile;
-Audiofile<double> audioFile2;
+AudioFile<float> audioFile;
 int clipLength;
-int outputLength
+int outputLength;
 int loop1;
 int innerloop;
-int sampleRate = audioFile.getSampleRate();
+string filePath;
+string outputFile;
+double sampleRate = audioFile.getSampleRate();
 int bitDepth = audioFile.getBitDepth();
 
-int numSamples = audioFile.getNumSamplesPerChannel();
+double numSamples = audioFile.getNumSamplesPerChannel();
 double lengthInSeconds = audioFile.getLengthInSeconds();
 
 int numChannels = audioFile.getNumChannels();
@@ -44,15 +45,64 @@ bool isStereo = audioFile.isStereo();
 
 int main()
 {
-    
-    cout << "**** Audio Convolution tool. Only supports WAV/AIFF files ****" << endl;
+    //Gather user info for the main program, clip length, output file length
+    cout << "**** Audio Convolution tool by Nated4wgy. Uses Audiofile.h from Adam Stark Github. Only supports WAV/AIFF files ****" << endl;
+    cout << "https://github.com/adamstark/AudioFile/blob/master/AudioFile.h" << endl;
+    cout << "                                  ;;;;;;;;;;;;;;;;;;;                                                               " << endl;
+    cout << "                                  ;;;;;;;;;;;;;;;;;;;                                                               " << endl;
+    cout << "                                  ;                 ;                                                               " << endl;
+    cout << "                                  ;                 ;                                                               " << endl;
+    cout << "                                  ;                 ;                                                               " << endl;
+    cout << "                                  ;                 ;                                                               " << endl;
+    cout << "                                  ;                 ;                                                               " << endl;
+    cout << "                                  ;                 ;                                                               " << endl;
+    cout << "                                  ;                 ;                                                               " << endl;
+    cout << "                             ,;;;;;            ,;;;;;                                                               " << endl;
+    cout << "                             ;;;;;;            ;;;;;;                                                               " << endl;
+    cout << "                             `;;;;'            `;;;;'                                                               " << endl;
+    cout << "\n\n\n\n\n";
     cout << "Enter audio clip length(In miliseconds): "; cin >> clipLength;
-    endl;
     cout << "Enter output file length(In seconds): "; cin >> outputLength;
-    endl;
-    cout << "Audio clip length: " << clipLength;
-    cout << "Output file length: " << outputLength;
+    cout << "Audio clip length: " << clipLength << endl;
+    cout << "Output file length: " << outputLength << endl;
+    //get the audio file location from the user. 
+    cout << "Enter filepath of WAV/AIFF file: "; 
+    cin >> filePath;
+    audioFile.load(filePath);
+    bool loadedOK = audioFile.load(filePath);
+    audioFile.printSummary();
+    cout << "Enter filepath for new file: " << endl;
+    cin >> outputFile;
 
+
+
+    //set up random number generator and give it a place to live.
+    //default_random_engine generator;
+   // uniform_int_distribution<int> distribution(1, numSamples);
+   // int randNum = distribution(generator);
+
+    //Start the loop. We want to here randomly access the samples in chunks of miliseconds set by the user.
+
+    float gain = 0.5f;
+
+    for (int i = 0; i < audioFile.getNumSamplesPerChannel(); i++)
+    {
+
+
+        for (int channel = 0; channel < audioFile.getNumChannels(); channel++)
+        {
+            audioFile.samples[channel][i] = audioFile.samples[channel][i] * gain;
+        }
+    }
+
+    audioFile.save(outputFile, AudioFileFormat::Wave);
+
+    
+
+
+
+
+    
 
     return 0;
 }
