@@ -45,9 +45,11 @@ bool isStereo = audioFile.isStereo();
 int main()
 {
     
-    cout << "**** Audio Convolution tool. Only supports WAV/AIFF files ****";
-    cin >> "Enter length of audio clip" >> clipLength;
-    cin >> "Enter length of output audio file" >> outputLength;
+    cout << "**** Audio Convolution tool. Only supports WAV/AIFF files ****" << endl;
+    cout << "Enter audio clip length(In miliseconds): "; cin >> clipLength;
+    endl;
+    cout << "Enter output file length(In seconds): "; cin >> outputLength;
+    endl;
     cout << "Audio clip length: " << clipLength;
     cout << "Output file length: " << outputLength;
 
