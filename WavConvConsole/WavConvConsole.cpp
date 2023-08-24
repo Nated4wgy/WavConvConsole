@@ -2,10 +2,10 @@
 //Program to convolude audio files. Starting as a console app. 
 
 //TO DO LIST
-// Get set up, declare needed varaibles
-//Get data from the user for those variables
-//Write main loop to randomly grab samples from audio file to a new buffer
-//Save said file. 
+// Get set up, declare needed varaibles - DONE
+//Get data from the user for those variables - DONE
+//Write main loop to randomly grab samples from audio file to a new buffer - Loop set up, needs random magic.
+//Save said file. - DONE
 //Use read me for audiofile.h to help. Thank god for opensauce. https://github.com/adamstark/AudioFile/blob/master/AudioFile.h
 
 
