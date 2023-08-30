@@ -21,10 +21,10 @@ using namespace std;
 AudioFile<float> audioFile;
 int clipLength;
 int outputLength;
-int loop1;
-int innerloop;
+int innerLoop;
 string filePath;
 string outputFile;
+float gain = 0.5f;
 double sampleRate = audioFile.getSampleRate();
 int bitDepth = audioFile.getBitDepth();
 
@@ -64,8 +64,11 @@ int main()
     cout << "\n\n\n\n\n";
     cout << "Enter audio clip length(In miliseconds): "; cin >> clipLength;
     cout << "Enter output file length(In seconds): "; cin >> outputLength;
-    cout << "Audio clip length: " << clipLength << endl;
+    cout << "Enter Gain level of output file (Between 0.1 > 1, 1 is full gain)"; cin >> gain;
+    cout << "Audio clip length: "  << clipLength << endl;
     cout << "Output file length: " << outputLength << endl;
+    cout << "Output file gain: " << gain << endl;
+    //Later we need to add code to specify the format of the output file. WAV/AIFF. Currently defaults to WAV
     //get the audio file location from the user. 
     cout << "Enter filepath of WAV/AIFF file: "; 
     cin >> filePath;
@@ -83,16 +86,17 @@ int main()
 
     //Start the loop. We want to here randomly access the samples in chunks of miliseconds set by the user.
 
-    float gain = 0.5f;
+    
 
-    for (int i = 0; i < audioFile.getNumSamplesPerChannel(); i++)
+    for (int i = 0; i < outputLength; i++)
     {
-        //Generate the random number here and store it so it can be chnaged each iteration of the loop. 
+        //Generate the random number here and store it so it can be changed each iteration of the loop. 
         int randomNum = distribution(gen);
 
         for (int channel = 0; channel < audioFile.getNumChannels(); channel++)
         {
-            audioFile.samples[channel][i] = audioFile.samples[channel][i] * gain;
+            for (innerLoop = 0; innerLoop < clipLength; innerLoop++)
+            audioFile.samples[channel][randomNum] = audioFile.samples[channel][clipLength] * gain;
         }
     }
 
