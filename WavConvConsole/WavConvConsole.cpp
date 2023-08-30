@@ -4,6 +4,7 @@
 //TO DO LIST
 // Get set up, declare needed varaibles - DONE
 //Get data from the user for those variables - DONE
+// Write code to create random number within range of 0-numSamples
 //Write main loop to randomly grab samples from audio file to a new buffer - Loop set up, needs random magic.
 //Save said file. - DONE
 //Use read me for audiofile.h to help. Thank god for opensauce. https://github.com/adamstark/AudioFile/blob/master/AudioFile.h
@@ -74,12 +75,11 @@ int main()
     cout << "Enter filepath for new file: " << endl;
     cin >> outputFile;
 
-
-
-    //set up random number generator and give it a place to live.
-    //default_random_engine generator;
-   // uniform_int_distribution<int> distribution(1, numSamples);
-   // int randNum = distribution(generator);
+    //set up random number generator 
+    random_device rd;
+    mt19937 gen(rd());
+    //Define the range for the random number
+    uniform_int_distribution<> distribution(1, numSamples);
 
     //Start the loop. We want to here randomly access the samples in chunks of miliseconds set by the user.
 
@@ -87,7 +87,8 @@ int main()
 
     for (int i = 0; i < audioFile.getNumSamplesPerChannel(); i++)
     {
-
+        //Generate the random number here and store it so it can be chnaged each iteration of the loop. 
+        int randomNum = distribution(gen);
 
         for (int channel = 0; channel < audioFile.getNumChannels(); channel++)
         {
