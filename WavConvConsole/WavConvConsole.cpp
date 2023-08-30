@@ -31,11 +31,11 @@
 //TO DO LIST
 // Get set up, declare needed varaibles - DONE
 //Get data from the user for those variables - DONE
-// Write code to create random number within range of 0-numSamples
-//Write main loop to randomly grab samples from audio file to a new buffer - Loop set up, needs random magic.
+// Write code to create random number within range of 0-numSamples - DONE
+//Write main loop to randomly grab samples from audio file to a new buffer - Loop set up, needs random magic. - DONE 
 //Save said file. - DONE
-//Use read me for audiofile.h to help. Thank god for opensauce. https://github.com/adamstark/AudioFile/blob/master/AudioFile.h
-
+//DEBUG MODE NOW - 
+// Get creating a user interface. Choose library for this. Maybe MFC? Pretty yucky though. 
 
 
 #include <iostream>
