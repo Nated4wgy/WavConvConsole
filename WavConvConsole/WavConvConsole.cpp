@@ -45,7 +45,10 @@ using namespace std;
 
 
 //Okay dude lets get set up.
+//Set up audio file buffers one for user audio file the second for the resulting output
 AudioFile<float> audioFile;
+AudioFile<float> b;
+//Set the rest of global vaeriables for user entered information and other needed for program.
 int clipLength;
 int outputLength;
 int innerLoop;
@@ -54,6 +57,7 @@ string outputFile;
 float gain = 0.5f;
 double sampleRate = audioFile.getSampleRate();
 int bitDepth = audioFile.getBitDepth();
+
 
 double numSamples = audioFile.getNumSamplesPerChannel();
 double lengthInSeconds = audioFile.getLengthInSeconds();
@@ -101,6 +105,8 @@ int main()
     cin >> filePath;
     audioFile.load(filePath);
     bool loadedOK = audioFile.load(filePath);
+    b.setNumChannels = numSamples;
+    b.setNumSamplesPerChannel = numChannels;
     audioFile.printSummary();
     cout << "Enter filepath for new file: " << endl;
     cin >> outputFile;
@@ -108,7 +114,8 @@ int main()
     //set up random number generator 
     random_device rd;
     mt19937 gen(rd());
-    //Define the range for the random number
+    //Define the range for the random number, so we dont try to grab samples from outside the buffer
+    //This is defined by 1 and the number of samples in the users audiofile.
     uniform_int_distribution<> distribution(1, numSamples);
 
     //Start the loop. We want to here randomly access the samples in chunks of miliseconds set by the user.
@@ -123,18 +130,11 @@ int main()
         for (int channel = 0; channel < audioFile.getNumChannels(); channel++)
         {
             for (innerLoop = 0; innerLoop < clipLength; innerLoop++)
-            audioFile.samples[channel][randomNum] = audioFile.samples[channel][clipLength] * gain;
+            a.samples[channel][clipLength] = audioFile.samples[channel][randomNum];
         }
     }
 
     audioFile.save(outputFile, AudioFileFormat::Wave);
-
-    
-
-
-
-
-    
 
     return 0;
 }
