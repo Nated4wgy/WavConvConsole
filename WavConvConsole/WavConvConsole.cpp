@@ -46,6 +46,7 @@ using namespace std;
 
 //Okay dude lets get set up.
 //Set up audio file buffers one for user audio file the second for the resulting output
+//later down the line would be nice to add checks to ensure the output audiobuffer is being set up correctly. Throw an error if not.
 AudioFile<float> audioFile;
 AudioFile<float> b;
 //Set the rest of global vaeriables for user entered information and other needed for program.
@@ -54,30 +55,23 @@ int outputLength;
 int innerLoop;
 string filePath;
 string outputFile;
-float gain = 0.5f;
+float gain = 0.5f; //Test variable may need later to add extra functionality to the code maybe allow the user to set a random or user defined gain for each audio snippet.
+
+//Variables needed for the audiofile.h header. This will just make coding a little easier down the line not needing to type out the long template names. 
 double sampleRate = audioFile.getSampleRate();
 int bitDepth = audioFile.getBitDepth();
-
-
 double numSamples = audioFile.getNumSamplesPerChannel();
 double lengthInSeconds = audioFile.getLengthInSeconds();
-
 int numChannels = audioFile.getNumChannels();
 bool isMono = audioFile.isMono();
 bool isStereo = audioFile.isStereo();
 
 
-
-
-
-
-
-//Ok dude Lets get writing the main program. Here we wanna start grabbing the users variables. 
-//- start with just clip length, then maybe we can look into gain also. Which can easily vary for each pass of the loop. We need to look into RAND. Probably need c++ math library for this
+//Main code starts here. This may need to change down the line as we add a UI or something along those lines
 
 int main()
 {
-    //Gather user info for the main program, clip length, output file length
+    //Gather user info for the main program vars
     cout << "**** Audio Convolution tool by Nated4wgy. Uses Audiofile.h from Adam Stark Github. Only supports WAV/AIFF files ****" << endl;
     cout << "https://github.com/adamstark/AudioFile/blob/master/AudioFile.h" << endl;
     cout << "                                  ;;;;;;;;;;;;;;;;;;;                                                               " << endl;
@@ -95,16 +89,19 @@ int main()
     cout << "\n\n\n\n\n";
     cout << "Enter audio clip length(In miliseconds): "; cin >> clipLength;
     cout << "Enter output file length(In seconds): "; cin >> outputLength;
-    cout << "Enter Gain level of output file (Between 0.1 > 1, 1 is full gain)"; cin >> gain;
+    cout << "Enter Gain level of output file (Between 0.1 > 1, 1 is full gain)"; cin >> gain;    
     cout << "Audio clip length: "  << clipLength << endl;
     cout << "Output file length: " << outputLength << endl;
     cout << "Output file gain: " << gain << endl;
+    //code to define outout audio file type goes here. Need some if statements. 
     //Later we need to add code to specify the format of the output file. WAV/AIFF. Currently defaults to WAV
     //get the audio file location from the user. 
     cout << "Enter filepath of WAV/AIFF file: "; 
     cin >> filePath;
     audioFile.load(filePath);
     bool loadedOK = audioFile.load(filePath);
+    //Set up the audiofile buffer here according to the info provided by audioFile header. We need the output to be the same as the input to avoid any bad bad. As we cycle from one channel, to the next.
+    //If the file is say mono and we try to set up a stereo output file we are gonna get some wierdness with the main program loop
     b.setNumChannels = numSamples;
     b.setNumSamplesPerChannel = numChannels;
     audioFile.printSummary();
@@ -119,21 +116,26 @@ int main()
     uniform_int_distribution<> distribution(1, numSamples);
 
     //Start the loop. We want to here randomly access the samples in chunks of miliseconds set by the user.
-
-    
-
+    //First for loop loops until the desired output length is reached. Im hoping we dont get any wierdness at the end of the file if the output length isnt divisable by the cliplength. #
+    //Maybe we can add a check for this down the line and throw an error or round it to the closest divisable. Or we can try to add code to fade out at the end of the clip 
+    //Latter is much more work as we need to chnage gain over time. First is less convinient for the user but is SO much less work.
     for (int i = 0; i < outputLength; i++)
     {
         //Generate the random number here and store it so it can be changed each iteration of the loop. 
         int randomNum = distribution(gen);
-
+        
+        //Second loop here will loop until all channels are filled according to the number of channels in the user audiofile. Ensuring we dont just fill one channel with samples.
+        //This also allows the next loopm to be able to know what channel it is working on each iteration
         for (int channel = 0; channel < audioFile.getNumChannels(); channel++)
         {
+            //Here is the main sauce This will grab a random start sample - then grab a number of samples according to the user input. then the loop ends
+            //Next iteration it will then choose a new random start point for the samples and so on. Until we have a resulting audio file of random chunks for the input file.
+            //COOOOOOOL!
             for (innerLoop = 0; innerLoop < clipLength; innerLoop++)
             a.samples[channel][clipLength] = audioFile.samples[channel][randomNum];
         }
     }
-
+     //Here we save that file into a WAV file. Later I plan to add the function to allow users to save to WAV or AIFF not just WAV. This shouldnt be much work at all. 
     audioFile.save(outputFile, AudioFileFormat::Wave);
 
     return 0;
