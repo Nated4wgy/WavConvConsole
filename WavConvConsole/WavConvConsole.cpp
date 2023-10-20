@@ -50,7 +50,7 @@ using namespace std;
 AudioFile<float> audioFile;
 AudioFile<float> b;
 //Set the rest of global vaeriables for user entered information and other needed for program.
-int clipLength;
+float clipLength;
 float outputLength;
 int innerLoop;
 string filePath;
@@ -128,8 +128,12 @@ int main()
 	
 	//Need to some math here to get user vasriables into useable numbers for the code.
 	//outputlength needs conversion from seconds to samples. simple. Length in seconds multiplied by samplerate of the input file.
+	//cliplength first gets converted from milliseconds into seconds. Then is multiplied by sampleRate to find out its length in samples for the loop.
 	
 	outputLength = outputLength * sampleRate;
+	clipLength = clipLength / 1000;
+	clipLength = clipLength * sampleRate;
+	
 	cout << "Output file length in samples (remove this after debug): " outputLength << endl;
 	
 	break;
