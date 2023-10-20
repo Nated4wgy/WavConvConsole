@@ -51,7 +51,7 @@ AudioFile<float> audioFile;
 AudioFile<float> b;
 //Set the rest of global vaeriables for user entered information and other needed for program.
 int clipLength;
-int outputLength;
+float outputLength;
 int innerLoop;
 string filePath;
 string outputFile;
