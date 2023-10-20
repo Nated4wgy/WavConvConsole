@@ -102,27 +102,47 @@ int main()
     bool loadedOK = audioFile.load(filePath);
     //Set up the audiofile buffer here according to the info provided by audioFile header. We need the output to be the same as the input to avoid any bad bad. As we cycle from one channel, to the next.
     //If the file is say mono and we try to set up a stereo output file we are gonna get some wierdness with the main program loop
-    b.setNumChannels = numSamples;
-    b.setNumSamplesPerChannel = numChannels;
+    b.setAudioBufferSize (numChannels, numSamples);
+	b.setBitDepth = audioFile.getBitDepth;
+	b.setSampleRate = audioFile.getSampleRate;
     audioFile.printSummary();
     cout << "Enter filepath for new file: " << endl;
     cin >> outputFile;
-
+	
+	//This code needs looking at. Seems to crash the program. might be worth returning to simpler random code. Psuedo ranomiser.
     //set up random number generator 
-    random_device rd;
-    mt19937 gen(rd());
+    //random_device rd;
+    //mt19937 gen(rd());
     //Define the range for the random number, so we dont try to grab samples from outside the buffer
     //This is defined by 1 and the number of samples in the users audiofile.
-    uniform_int_distribution<> distribution(1, numSamples);
+    //uniform_int_distribution<> distribution(1, numSamples);
+	int min = 0;
+	int random_integer;
+	std::random_device rd;     // Only used once to initialise (seed) engine
+	std::mt19937 rng(rd());    // Random-number engine used (Mersenne-Twister in this case)
+	std::uniform_int_distribution<int> uni(min,numSamples); // Guaranteed unbiased
 
-    //Start the loop. We want to here randomly access the samples in chunks of miliseconds set by the user.
+	auto random_integer = uni(rng);
+	cout << "random_integer =" random_integer << endl;
+	
+	
+	//Need to some math here to get user vasriables into useable numbers for the code.
+	//outputlength needs conversion from seconds to samples. simple. Length in seconds multiplied by samplerate of the input file.
+	
+	outputLength = outputLength * sampleRate;
+	cout << "Output file length in samples (remove this after debug): " << endl;
+	
+	break;
+	
+	 //Start the loop. We want to here randomly access the samples in chunks of miliseconds set by the user.
     //First for loop loops until the desired output length is reached. Im hoping we dont get any wierdness at the end of the file if the output length isnt divisable by the cliplength. #
     //Maybe we can add a check for this down the line and throw an error or round it to the closest divisable. Or we can try to add code to fade out at the end of the clip 
     //Latter is much more work as we need to chnage gain over time. First is less convinient for the user but is SO much less work.
     for (int i = 0; i < outputLength; i++)
     {
         //Generate the random number here and store it so it can be changed each iteration of the loop. 
-        int randomNum = distribution(gen);
+        //int randomNum = distribution(gen);
+		auto random_integer = uni(rng);
         
         //Second loop here will loop until all channels are filled according to the number of channels in the user audiofile. Ensuring we dont just fill one channel with samples.
         //This also allows the next loopm to be able to know what channel it is working on each iteration
@@ -131,12 +151,12 @@ int main()
             //Here is the main sauce This will grab a random start sample - then grab a number of samples according to the user input. then the loop ends
             //Next iteration it will then choose a new random start point for the samples and so on. Until we have a resulting audio file of random chunks for the input file.
             //COOOOOOOL!
-            for (innerLoop = 0; innerLoop < clipLength; innerLoop++)
-            a.samples[channel][clipLength] = audioFile.samples[channel][randomNum];
+            for (int k = 0; k < clipLength; k++)
+            b.samples[channel][i] = audioFile.samples[channel][random_integer];
         }
     }
      //Here we save that file into a WAV file. Later I plan to add the function to allow users to save to WAV or AIFF not just WAV. This shouldnt be much work at all. 
-    audioFile.save(outputFile, AudioFileFormat::Wave);
+    b.save(outputFile, AudioFileFormat::Wave);
 
     return 0;
 }
