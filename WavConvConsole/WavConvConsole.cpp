@@ -130,7 +130,7 @@ int main()
 	//outputlength needs conversion from seconds to samples. simple. Length in seconds multiplied by samplerate of the input file.
 	
 	outputLength = outputLength * sampleRate;
-	cout << "Output file length in samples (remove this after debug): " << endl;
+	cout << "Output file length in samples (remove this after debug): " outputLength << endl;
 	
 	break;
 	
