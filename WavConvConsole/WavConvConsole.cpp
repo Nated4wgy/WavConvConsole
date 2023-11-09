@@ -9,9 +9,7 @@ using namespace std;
 AudioFile<float> a;
 AudioFile<float> b;
 
-//variables for easy file - Remmeber to initilise these later on after file loading
-
-
+//variables for easy life later on - Remmeber to initilise these later on after file loading!!
 double sampleRate;
 int bitDepth;
 double numSamples;
@@ -23,14 +21,10 @@ bool isStereo;
 //variables for program math
 float clipLength;
 float outputLength;
-int innerLoop; //may be redundant now
 string filePath;
 string outputFile;
 
-
-
-
-// main program can begin here.
+// main program begins here.
 
 int main()
 {
@@ -94,17 +88,21 @@ int main()
 
 
     //Math here to convert user variables into useable ones for samples
-
     outputLength = outputLength * sampleRate;
     clipLength = clipLength / 1000;
     clipLength = clipLength * sampleRate;
 
+    // Remove this line after debug. Only here to make sure the code is working correctly. 
     cout << "Output file length in samples (remove this after debug): ";  outputLength << endl;
+    
 
 
-    //Now we can start the main loop and hope wee hit gold. Cos I made a dumb dumb.
+    //Now we can start the main loop and hope we hit gold. - Previously loops weren't iterating due to coding error. Conditional variable wasn't being properly initialised. 
     for (int i = 0; i < outputLength; i++)
     {
+         //Gonna pop some console output here for debug remove after.
+        cout << "Loop iteration: "; i << endl;
+        cout << "outputLength: "; outputLength << endl;
         //Generate random number here as it will happen every loop
         auto random_Integer = uni(rng);
 
