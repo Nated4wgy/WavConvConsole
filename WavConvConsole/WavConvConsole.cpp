@@ -66,8 +66,8 @@ int main()
     bool isMono = a.isMono();
     bool isStereo = a.isStereo();
 
-    //Set up the audiofile buffer here according to the info provided by audioFile header. We need the output to be the same as the input to avoid any bad bad. As we cycle from one channel, to the next.
-    //If the file is say mono and we try to set up a stereo output file we are gonna get some wierdness with the main program loop
+    //Set up the audiofile buffer here according to the info provided by audioFile header. 
+    //At some point we need to add a check here for Mono tracks. So channels get set correctly. should be pretty easy  due to the header.
     b.setAudioBufferSize(numChannels, numSamples);
     b.setBitDepth = audioFile.getBitDepth;
     b.setSampleRate = audioFile.getSampleRate;
@@ -90,7 +90,7 @@ int main()
 
     //Math here to convert user variables into useable ones for samples
     outputLength = outputLength * sampleRate;
-    clipLength = clipLength / 1000;
+    clipLength = clipLength * 0.001;
     clipLength = clipLength * sampleRate;
 
     // Remove this line after debug. Only here to make sure the code is working correctly. 
