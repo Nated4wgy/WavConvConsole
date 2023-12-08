@@ -114,6 +114,7 @@ int main()
             for (int k = 0; k < clipLength; k++)
             {
                 b.samples[channel][i] = a.samples[channel][random_Integer];
+                random_Integer++;
 
             }
         }
