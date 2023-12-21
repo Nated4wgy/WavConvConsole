@@ -23,14 +23,16 @@ float clipLength;
 float outputLength;
 string filePath;
 string outputFile;
+float outputGain;
 
 // main program begins here.
 
 int main()
 {
-    //Gather user info for the main program vars
+    //Gather user info for the main program vars and add a little interfaceness before adding a UI API
     cout << "**** Audio Convolution tool by Nated4wgy. Uses Audiofile.h from Adam Stark Github. Only supports WAV/AIFF files ****" << endl;
     cout << "https://github.com/adamstark/AudioFile/blob/master/AudioFile.h" << endl;
+    cout << "More file support is planned for later releases" << endl;
     cout << "                                  ;;;;;;;;;;;;;;;;;;;                                                               " << endl;
     cout << "                                  ;;;;;;;;;;;;;;;;;;;                                                               " << endl;
     cout << "                                  ;                 ;                                                               " << endl;
@@ -46,10 +48,10 @@ int main()
     cout << "\n\n\n\n\n";
     cout << "Enter audio clip length(In miliseconds): "; cin >> clipLength;
     cout << "Enter output file length(In seconds): "; cin >> outputLength;
-    cout << "Enter Gain level of output file (Between 0.1 > 1, 1 is full gain)"; cin >> gain;
+    cout << "Enter Gain level of output file (Between 0.1 > 1, 1 is full gain)"; cin >> outputGain;
     cout << "Audio clip length: " << clipLength << endl;
     cout << "Output file length: " << outputLength << endl;
-   // cout << "Output file gain: " << gain << endl;
+    cout << "Output file gain: " << gain << endl;
     //code to define outout audio file type goes here. Need some if statements. 
     //Later we need to add code to specify the format of the output file. WAV/AIFF. Currently defaults to WAV
     //get the audio file location from the user. 
@@ -68,6 +70,7 @@ int main()
 
     //Set up the audiofile buffer here according to the info provided by audioFile header. 
     //At some point we need to add a check here for Mono tracks. So channels get set correctly. should be pretty easy  due to the header.
+    //Will require some if/else magic. If mono then mono loop > else stereo loop. Loops will be practically identical.    
     b.setAudioBufferSize(numChannels, numSamples);
     b.setBitDepth = audioFile.getBitDepth;
     b.setSampleRate = audioFile.getSampleRate;
@@ -84,8 +87,8 @@ int main()
     uniform_int_distribution<int>uni(min, numSamples);
 
     auto random_Integer = uni(rng);
-    //More console debug can be removed later.
-    cout << "Random Sample = "; random_Integer << endl;
+    //More console debug can be removed later. useless info for the user.
+    cout << "Random Sample (remove after debug) = "; random_Integer << endl;
 
 
     //Math here to convert user variables into useable ones for samples
@@ -97,7 +100,7 @@ int main()
     cout << "Output file length in samples (remove this after debug): ";  outputLength << endl;
     
 
-
+    // need to add logic for gain into the main loop still. 
     //Now we can start the main loop and hope we hit gold. - Previously loops weren't iterating due to coding error. Conditional variable wasn't being properly initialised. 
     for (int i = 0; i < outputLength; i++)
     {
