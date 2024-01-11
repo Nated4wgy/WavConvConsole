@@ -52,10 +52,10 @@ int main()
     cout << "Audio clip length: " << clipLength << endl;
     cout << "Output file length: " << outputLength << endl;
     cout << "Output file gain: " << gain << endl;
-    //code to define outout audio file type goes here. Need some if statements. 
+    //code to define output audio file type goes here. Need some if statements. 
     //Later we need to add code to specify the format of the output file. WAV/AIFF. Currently defaults to WAV
-    //get the audio file location from the user. 
-    cout << "Enter filepath of WAV/AIFF file: ";
+    
+    cout << "Enter filepath of WAV/AIFF file: "; //get the audio file location from the user. 
     cin >> filePath;
     a.load(filePath);
     bool loadedOK = audioFile.load(filePath);
@@ -70,8 +70,11 @@ int main()
 
     //Set up the audiofile buffer here according to the info provided by audioFile header. 
     //At some point we need to add a check here for Mono tracks. So channels get set correctly. should be pretty easy  due to the header.
-    //Will require some if/else magic. If mono then mono loop > else stereo loop. Loops will be practically identical.    
+    //Will require some if/else magic. If mono then mono loop > else stereo loop. Loops will be practically identical.   
+    // Need to add some math so that we can increase the buffer by the amount of one Snippet of the audio file
+    //Without this we are probably running into a buffer overflow. Which explains the crashes.!
     b.setAudioBufferSize(numChannels, numSamples);
+    //set audio buffer size (numsamples + clip length in samples to stop the buffer overflow crash)
     b.setBitDepth = audioFile.getBitDepth;
     b.setSampleRate = audioFile.getSampleRate;
     audioFile.printSummary();
