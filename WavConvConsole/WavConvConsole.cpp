@@ -73,7 +73,11 @@ int main()
     //Will require some if/else magic. If mono then mono loop > else stereo loop. Loops will be practically identical.   
     // Need to add some math so that we can increase the buffer by the amount of one Snippet of the audio file
     //Without this we are probably running into a buffer overflow. Which explains the crashes.!
-    b.setAudioBufferSize(numChannels, numSamples);
+    clipLength = clipLength * 0.001; //convert milliseconds to seconds so I can get the correct amount of samples to add to the buffer. 
+    //Avoiding any possible overflow situation.
+    clipLength = clipLength * numSamples;
+    double noOverflow = clipLength + numSamples;
+    b.setAudioBufferSize(numChannels, noOverflow);
     //set audio buffer size (numsamples + clip length in samples to stop the buffer overflow crash)
     b.setBitDepth = audioFile.getBitDepth;
     b.setSampleRate = audioFile.getSampleRate;
@@ -96,9 +100,9 @@ int main()
 
     //Math here to convert user variables into useable ones for samples
     outputLength = outputLength * sampleRate;
-    clipLength = clipLength * 0.001;
-    clipLength = clipLength * sampleRate;
-
+    //clipLength = clipLength * 0.001; //Now doing this math earlier on. 
+    //Needs to be calculated earlier in the code so I can avoid a buffer overflow in main program loops.
+    //clipLength = clipLength * sampleRate; //Also doing this math earlier as I need the clipLength in samples to add to the end of buffer avoiding overflows.
     // Remove this line after debug. Only here to make sure the code is working correctly. 
     cout << "Output file length in samples (remove this after debug): ";  outputLength << endl;
     
