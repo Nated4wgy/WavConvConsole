@@ -129,6 +129,15 @@ int main()
             }
         }
     }
+    //To make life easier for myself. instead of trying to apply gain to each seperate chunk. For now we can just do a second pass and add the gain to the overall file.
+    //later on we can add it into the main loop so it can do this chunk by chunk. Using less processing power and taking less time. 
+         //       for (int j = 0; j < b.getNumSamplesPerChannel(); i++)
+        //   {
+       //     for (int channel = 0; channel < b.getNumChannels(); channel++)
+       //    {
+      //      b.samples[channel][i] = b.samples[channel][i] * gain;
+      //   }
+     //   }
 
     b.save(outputFile, AudioFileFormat::Wave);
 
