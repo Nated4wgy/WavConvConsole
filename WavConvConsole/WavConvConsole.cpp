@@ -58,7 +58,7 @@ int main()
     cout << "Enter filepath of WAV/AIFF file: "; //get the audio file location from the user. 
     cin >> filePath;
     a.load(filePath);
-    bool loadedOK = audioFile.load(filePath);
+    bool loadedOK = a.load(filePath);
     //update variables now file is loaded.
     double sampleRate = a.getSampleRate();
     int bitDepth = a.getBitDepth();
